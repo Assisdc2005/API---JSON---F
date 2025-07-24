@@ -6,7 +6,9 @@ import uvicorn
 
 app = FastAPI()
 
-JSON_PATH = r"C:\Users\matheus.assis\Downloads\fornecedores.json"
+# Caminho dinâmico (relativo ao arquivo)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+JSON_PATH = os.path.join(BASE_DIR, "fornecedores.json")
 
 @app.get("/")
 def raiz():
@@ -20,6 +22,5 @@ def get_fornecedores():
             return JSONResponse(content=data)
     return JSONResponse(content={"erro": "Arquivo JSON não encontrado"}, status_code=404)
 
-# Adicione esta parte
 if __name__ == "__main__":
     uvicorn.run("api_json:app", host="127.0.0.1", port=8000, reload=True)
