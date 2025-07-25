@@ -7,7 +7,7 @@ import uvicorn
 
 app = FastAPI()
 
-JSON_PATH = r"C:\Users\matheus.assis\Downloads\JSON\fornecedores.json"
+JSON_PATH = os.path.join(BASE_DIR, "fornecedores.json")
 
 def limpar_cnpj(cnpj: str) -> str:
     return re.sub(r"\D", "", cnpj)
