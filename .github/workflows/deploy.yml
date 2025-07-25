@@ -16,6 +16,9 @@ jobs:
       - name: Set up Fly CLI
         uses: superfly/flyctl-actions/setup-flyctl@master
 
+      - name: Debug app name
+        run: echo "App name is '${{ secrets.FLY_APP_NAME }}'"
+
       - name: Deploy app
         run: flyctl deploy --remote-only --app ${{ secrets.FLY_APP_NAME }}
         env:
