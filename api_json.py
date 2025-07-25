@@ -12,7 +12,7 @@ JSON_PATH = os.path.join(BASE_DIR, "fornecedores.json")
 
 def limpar_cnpj(cnpj: str) -> str:
     return re.sub(r"\D", "", cnpj)
-#carregar dados
+
 def carregar_fornecedores():
     if not os.path.exists(JSON_PATH):
         raise HTTPException(status_code=404, detail="Arquivo JSON não encontrado")
@@ -23,12 +23,11 @@ def carregar_fornecedores():
 def raiz():
     return {"mensagem": "API funcionando! Use /fornecedores para acessar os dados."}
 
-# Retorna todos os fornecedores
 @app.get("/fornecedores")
 def get_fornecedores():
-    return carregar_fornecedores()
+    data = carregar_fornecedores()
+    return JSONResponse(content=data, headers={"Cache-Control": "no-store, no-cache, must-revalidate, max-age=0"})
 
-# Busca fornecedor por CNPJ exato
 @app.get("/fornecedores/{cnpj}")
 def get_fornecedor_por_cnpj(cnpj: str):
     fornecedores = carregar_fornecedores()
@@ -36,11 +35,10 @@ def get_fornecedor_por_cnpj(cnpj: str):
 
     for fornecedor in fornecedores:
         if limpar_cnpj(fornecedor.get("CNPJ", "")) == cnpj_limpo:
-            return fornecedor
+            return JSONResponse(content=fornecedor, headers={"Cache-Control": "no-store, no-cache, must-revalidate, max-age=0"})
 
     raise HTTPException(status_code=404, detail=f"Fornecedor com CNPJ {cnpj} não encontrado")
 
-# Filtro por CNPJ, Nome, Email e Conectado
 @app.get("/fornecedores/filtro")
 def filtrar_fornecedores(
     cnpj: str = Query(None),
@@ -65,9 +63,9 @@ def filtrar_fornecedores(
         resultados = [f for f in resultados if f.get("Conectado", "").lower() == conectado.lower()]
 
     if not resultados:
-        return JSONResponse(content={"mensagem": "Nenhum fornecedor encontrado"}, status_code=404)
+        return JSONResponse(content={"mensagem": "Nenhum fornecedor encontrado"}, status_code=404, headers={"Cache-Control": "no-store, no-cache, must-revalidate, max-age=0"})
 
-    return resultados
+    return JSONResponse(content=resultados, headers={"Cache-Control": "no-store, no-cache, must-revalidate, max-age=0"})
 
 if __name__ == "__main__":
     uvicorn.run("api_json:app", host="127.0.0.1", port=8000, reload=True)
