@@ -7,6 +7,7 @@ import uvicorn
 
 app = FastAPI()
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 JSON_PATH = os.path.join(BASE_DIR, "fornecedores.json")
 
 def limpar_cnpj(cnpj: str) -> str:
